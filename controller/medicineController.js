@@ -236,10 +236,12 @@ exports.makePaymentController = async (req, res) => {
             //details of product that is buying
             line_items: line_item,
             mode: 'payment',
-            success_url: "https://medstore-frontend-x4qe.vercel.app/payment-succcess",
-           cancel_url: "https://medstore-frontend-x4qe.vercel.app/payment-error"
+            success_url: "https://medstore-frontend-o7dr.vercel.app/payment-succcess",
+           cancel_url: "https://medstore-frontend-o7dr.vercel.app/payment-error"
         });
 //https://medstore-frontend-x4qe.vercel.app/
+
+//https://medstore-frontend-o7dr.vercel.app/
 
 //  success_url: "http://localhost:5173/payment-succcess",
           //  cancel_url: "http://localhost:5173/payment-error"

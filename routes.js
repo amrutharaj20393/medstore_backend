@@ -30,7 +30,7 @@ route.put('/cart',jwtMiddleware,medicineController.addtoCartController)
 
 route.put('/make-payment',jwtMiddleware,medicineController.makePaymentController)
 //all order list
-route.get('/get-ordermedicine',medicineController.getMedicineOrderController)
+route.get('/get-ordermedicine',jwtMiddleware,medicineController.getMedicineOrderController)
 
 //admin--------------------------------------
 //path to add medicine by admin
@@ -46,5 +46,7 @@ route.delete('/delete-medicine/:id',medicineController.deleteMedicineController)
 
 //path to get all users
 route.get('/get-all-userdet-admin',jwtMiddleware,userController.getAllUserAdminController)
+//all order list for admin
+route.get('/get-ordermedicineadmin',medicineController.getMedicineOrderAdminController)
 
 module.exports = route

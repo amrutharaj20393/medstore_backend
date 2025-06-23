@@ -237,12 +237,13 @@ exports.makePaymentController = async (req, res) => {
             line_items: line_item,
             mode: 'payment',
             success_url: "https://medstore-frontend-x4qe.vercel.app/payment-succcess",
-            cancel_url: "https://medstore-frontend-x4qe.vercel.app/payment-error"
+           cancel_url: "https://medstore-frontend-x4qe.vercel.app/payment-error"
         });
 //https://medstore-frontend-x4qe.vercel.app/
 
 //  success_url: "http://localhost:5173/payment-succcess",
           //  cancel_url: "http://localhost:5173/payment-error"
+          
         console.log(session)
         res.status(200).json({ sessionId: session.id })
     } catch (error) {
@@ -252,6 +253,22 @@ exports.makePaymentController = async (req, res) => {
 }
 
 exports.getMedicineOrderController = async (req, res) => {
+     const email = req.payload
+    console.log(email)
+    try {
+
+        const allMedicineOrder = await medicines.find({ status: "sold" ,brought:email})
+        console.log(allMedicineOrder)
+        res.status(200).json(allMedicineOrder)
+
+    } catch (error) {
+        res.status(500).json(error)
+    }
+}
+//orderlist for admin
+
+exports.getMedicineOrderAdminController = async (req, res) => {
+     
     try {
 
         const allMedicineOrder = await medicines.find({ status: "sold" })

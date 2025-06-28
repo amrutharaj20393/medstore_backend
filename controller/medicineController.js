@@ -168,12 +168,12 @@ exports.getacartController = async (req, res) => {
         console.log("inside cart")
         const allMedicineToCart = await medicines.find({ status: "Addedtocart", brought: email })
         console.log(allMedicineToCart)
-       if (allMedicineToCart.length == 0) {
-///console.log("inside 401")
+        if (allMedicineToCart.length == 0) {
+            ///console.log("inside 401")
             res.status(401).json('no data')
         } else {
-//console.log("inside 200")
-            res.status(200).json({cartItems:allMedicineToCart})
+            //console.log("inside 200")
+            res.status(200).json({ cartItems: allMedicineToCart })
         }
 
 
@@ -236,16 +236,19 @@ exports.makePaymentController = async (req, res) => {
             //details of product that is buying
             line_items: line_item,
             mode: 'payment',
-            success_url: "https://medstore-frontend-o7dr.vercel.app/payment-succcess",
+                success_url: "https://medstore-frontend-o7dr.vercel.app/payment-succcess",
            cancel_url: "https://medstore-frontend-o7dr.vercel.app/payment-error"
+            /// success_url: "http://localhost:5173/payment-succcess",
+            /// cancel_url: "http://localhost:5173/payment-error"
         });
-//https://medstore-frontend-x4qe.vercel.app/
+        
 
-//https://medstore-frontend-o7dr.vercel.app/
+        //https://medstore-frontend-o7dr.vercel.app/
 
-//  success_url: "http://localhost:5173/payment-succcess",
-          //  cancel_url: "http://localhost:5173/payment-error"
-          
+        //  success_url: "http://localhost:5173/payment-succcess",
+        //  cancel_url: "http://localhost:5173/payment-error"
+       
+
         console.log(session)
         res.status(200).json({ sessionId: session.id })
     } catch (error) {
@@ -255,11 +258,11 @@ exports.makePaymentController = async (req, res) => {
 }
 
 exports.getMedicineOrderController = async (req, res) => {
-     const email = req.payload
+    const email = req.payload
     console.log(email)
     try {
 
-        const allMedicineOrder = await medicines.find({ status: "sold" ,brought:email})
+        const allMedicineOrder = await medicines.find({ status: "sold", brought: email })
         console.log(allMedicineOrder)
         res.status(200).json(allMedicineOrder)
 
@@ -270,7 +273,7 @@ exports.getMedicineOrderController = async (req, res) => {
 //orderlist for admin
 
 exports.getMedicineOrderAdminController = async (req, res) => {
-     
+
     try {
 
         const allMedicineOrder = await medicines.find({ status: "sold" })

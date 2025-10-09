@@ -8,7 +8,7 @@ const jwtMiddleware = (req, res, next) => {
     try {
  console.log(token)
         const jwtResponse = jwt.verify(token, 'secretkey')//it returns usermail and isued time
-        console.log(jwtResponse)
+        //console.log(jwtResponse)
         req.payload = jwtResponse.userMail//pass req.payload to controller to identify who added medicine
         next()
     } catch (error) {

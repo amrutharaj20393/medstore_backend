@@ -6,8 +6,10 @@ const stripe = require('stripe')('sk_test_51RSxz22LjIoQ1c2H6yVtyvIwv1PtlVO1yqkVI
 exports.addMedicineController = async (req, res) => {
 
     console.log(req.body)
-    const { Medname, price, stock, imageurl, brandname, status, category, description, brought } = req.body
-
+    console.log(req.file)
+    const { Medname, price, stock, brandname, status, category, description, brought } = req.body
+    let imageurl = ""
+    imageurl = req.file.filename
     try {
 
         const existingMedicine = await medicines.findOne({ Medname })
@@ -95,14 +97,14 @@ exports.getAllMedicineAdminController = async (req, res) => {
 }
 //edit a medicine
 exports.editMedicineController = async (req, res) => {
-    const { _id, Medname, price, stock, imageurl, brandname, category, description, brought } = req.body
-    console.log(_id, Medname, price, stock, imageurl, brandname, category, description, brought)
+    const { _id, Medname, price, stock, brandname, category, description, brought } = req.body
+    console.log(_id, Medname, price, stock, brandname, category, description, brought)
 
     try {
 
         const existingMedcine = await medicines.findByIdAndUpdate({ _id }, {
             _id,
-            Medname, price, stock, imageurl, brandname, status: "", category, description, brought
+            Medname, price, stock, brandname, status: "", category, description, brought
         })
 
         await existingMedcine.save()
@@ -129,14 +131,17 @@ exports.deleteMedicineController = async (req, res) => {
 exports.addtoCartController = async (req, res) => {
     const email = req.payload
     const { _id, Medname, price, stock, imageurl, brandname, status, category, description, brought } = req.body
+
     console.log(_id, Medname, price, stock, imageurl, brandname, status, category, description, brought)
+    //console.log(quantity)
 
     try {
         const existAddtocartMedicine = await medicines.find({ _id, status: "Addedtocart", brought: email })
         console.log(existAddtocartMedicine)
         if (existAddtocartMedicine.length == 0) {
             console.log('hai')
-            const existingMedicine = await medicines.findByIdAndUpdate({ _id }, {
+            const existingMedicine = await medicines.findByIdAndUpdate
+            ({ _id }, {
                 _id, Medname, price, stock, imageurl, brandname, status: "Addedtocart", category, description, brought: email
             }, { new: true })
             await existingMedicine.save()
@@ -184,23 +189,56 @@ exports.getacartController = async (req, res) => {
 
 //payment controller
 exports.makePaymentController = async (req, res) => {
-    const { medDetails } = req.body
-    console.log(medDetails)
+    const { medDetails, quantity } = req.body
+
+    // console.log("inside payment")
+    /// console.log(medDetails)
+    console.log(quantity)
     const email = req.payload
+    console.log(email)
     try {
 
-        const existingMed = await medicines.findByIdAndUpdate({ _id: medDetails._id },
-            {
-                Medname: medDetails.Medname,
-                price: medDetails.price,
-                stock: medDetails.stock,
-                imageurl: medDetails.imageurl,
-                brandname: medDetails.brandname,
-                status: 'sold',
-                description: medDetails.description,
-                brought: email
-            }, { new: true }
-        )
+        const soldmed = await medicines.findOne({ status: "sold", brought: email, _id: medDetails._id })
+        {
+            console.log(soldmed)
+            if (soldmed) {
+               const quan = soldmed.quantity + quantity
+
+               
+                 const existingMed = await medicines.findByIdAndUpdate({ _id: medDetails._id },
+                    {
+                        Medname: medDetails.Medname,
+                        price: medDetails.price,
+                        stock: medDetails.stock - quantity,
+                        imageurl: medDetails.imageurl,
+                        brandname: medDetails.brandname,
+                        status: 'sold',
+                        description: medDetails.description,
+                        brought: email,
+                        quantity: quan
+                    }, { new: true }
+                )
+            }
+            else {
+                console.log("hai")
+                const existingMed = await medicines.findByIdAndUpdate({ _id: medDetails._id },
+                    {
+                        Medname: medDetails.Medname,
+                        price: medDetails.price,
+                        stock: medDetails.stock - quantity,
+                        imageurl: medDetails.imageurl,
+                        brandname: medDetails.brandname,
+                        status: 'sold',
+                        description: medDetails.description,
+                        brought: email,
+                        quantity: quantity
+                    }, { new: true }
+                )
+            }
+
+        }
+
+
 
         //create stripe check out session
         const line_item = [{
@@ -236,18 +274,18 @@ exports.makePaymentController = async (req, res) => {
             //details of product that is buying
             line_items: line_item,
             mode: 'payment',
-                success_url: "https://medstore-frontend-o7dr.vercel.app/payment-succcess",
-           cancel_url: "https://medstore-frontend-o7dr.vercel.app/payment-error"
-            /// success_url: "http://localhost:5173/payment-succcess",
-            /// cancel_url: "http://localhost:5173/payment-error"
+            success_url: "https://medstore-frontend-o7dr.vercel.app/payment-succcess",
+            cancel_url: "https://medstore-frontend-o7dr.vercel.app/payment-error"
+            ///success_url: "http://localhost:5173/payment-succcess",
+            ///cancel_url: "http://localhost:5173/payment-error"
         });
-        
+
 
         //https://medstore-frontend-o7dr.vercel.app/
 
         //  success_url: "http://localhost:5173/payment-succcess",
         //  cancel_url: "http://localhost:5173/payment-error"
-       
+
 
         console.log(session)
         res.status(200).json({ sessionId: session.id })

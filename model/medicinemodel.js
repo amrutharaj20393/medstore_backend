@@ -32,9 +32,12 @@ const medicineSchema = new mongoose.Schema({
         type: String
 
     },
-    brought:{
-         type: String,
+    brought: {
+        type: String,
         default: "Mail"
+    },
+    quantity: {
+        type: Number
     }
 
 })

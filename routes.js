@@ -4,6 +4,7 @@ const route = new express.Router()
 const userController = require('./controller/userController')
 const medicineController = require('./controller/medicineController')
 const jwtMiddleware = require('./middleware/jwtMiddlware')
+const multerConfig=require('./middleware/multerMiddleware')
 
 route.post('/register', userController.registerController)
 
@@ -31,10 +32,12 @@ route.put('/cart',jwtMiddleware,medicineController.addtoCartController)
 route.put('/make-payment',jwtMiddleware,medicineController.makePaymentController)
 //all order list
 route.get('/get-ordermedicine',jwtMiddleware,medicineController.getMedicineOrderController)
+//path to update user profile
+route.put('/userprofile-update',jwtMiddleware,multerConfig.single('profile'),userController.editUserProfileController)
 
 //admin--------------------------------------
 //path to add medicine by admin
-route.post('/add-medicne-admin', jwtMiddleware, medicineController.addMedicineController)
+route.post('/add-medicne-admin', jwtMiddleware,multerConfig.single('uploadedImage'), medicineController.addMedicineController)
 
 route.get('/get-all-medicines-admin',jwtMiddleware,medicineController.getAllMedicineAdminController)
 

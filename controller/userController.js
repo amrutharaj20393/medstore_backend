@@ -70,7 +70,7 @@ exports.googleLoginController = async (req, res) => {
             await newuser.save()
             const token = jwt.sign({ userMail: newuser.email }, 'secretkey')
             await newuser.save()
-            res.status(200).json({ existinguser:newuser, token })
+            res.status(200).json({ existinguser: newuser, token })
         }
 
     } catch (error) {
@@ -90,4 +90,21 @@ exports.getAllUserAdminController = async (req, res) => {
     } catch (error) {
         res.status(500).json(error)
     }
+}
+exports.editUserProfileController = async (req, res) => {
+    const { username, password,  profile } = req.body
+    const prof = req.file ? req.file.filename : profile
+    console.log(prof)
+    const email = req.payload
+    console.log(email)
+    try {
+
+        const Userdetails = await users.findOneAndUpdate({ email }, { username, email, profile: prof, password}, { new: true })
+        await Userdetails.save()
+        res.status(200).json(Userdetails)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+
+
 }

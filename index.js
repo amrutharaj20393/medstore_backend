@@ -16,7 +16,10 @@ netmedServer.use(route)
 
 //import db connection file
 require('./databaseconnection')
-PORT = 3000 || process.env.PORT
+
+//export the uploads folder from the server side this upload name is used in frontend  to display uploaded imageserverurl/upload/ 
+netmedServer.use('/serverupload',express.static('./uploads'))
+PORT = 2000 || process.env.PORT
 
 netmedServer.listen(PORT, () => {
     console.log(`server running successfilly ${PORT}`)

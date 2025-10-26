@@ -274,8 +274,8 @@ exports.makePaymentController = async (req, res) => {
             //details of product that is buying
             line_items: line_item,
             mode: 'payment',
-            success_url: "https://medstore-frontend-o7dr.vercel.app/payment-succcess",
-            cancel_url: "https://medstore-frontend-o7dr.vercel.app/payment-error"
+            success_url: "https://medstore-frontend-cobg.vercel.app/payment-succcess",
+            cancel_url: "https://medstore-frontend-cobg.vercel.app/payment-error"
             ///success_url: "http://localhost:5173/payment-succcess",
             ///cancel_url: "http://localhost:5173/payment-error"
         });
@@ -288,7 +288,8 @@ exports.makePaymentController = async (req, res) => {
 
 
         console.log(session)
-        res.status(200).json({ sessionId: session.id })
+          res.status(200).json({ url: session.url }); 
+        //res.status(200).json({ sessionId: session.id })
     } catch (error) {
         res.status(500).json(error)
     }
